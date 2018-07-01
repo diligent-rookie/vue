@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!-- 开发环境版本，包含了用帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        .tab-button {
+            padding: 6px 10px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            background: #f0f0f0;
+            margin-bottom: -1px;
+            margin-right: -1px;
+        }
+
+        .tab-button:hover {
+            background: #e0e0e0;
+        }
+
+        .tab-button.active {
+            background: #e0e0e0;
+        }
+
+        .tab {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .posts-tab {
+            display: flex;
+        }
+
+        .posts-sidebar {
+            max-width: 40vw;
+            margin: 0;
+            padding: 0 10px 0 0;
+            list-style-type: none;
+            border-right: 1px solid #ccc;
+        }
+
+        .posts-sidebar li {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .posts-sidebar li:hover {
+            background: #eee;
+        }
+
+        .posts-sidebar li.selected {
+            background: lightblue;
+        }
+
+        .selected-post-container {
+            padding-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 
+        该组件中的v-bind:class后面接的数组是保证多个类名同时具有 
+        v-on：click当点击事件发生时，我们就把上面选项部分赋给当前选项卡的变量那个
+    -->
+    <div id="dynamic-compnent-demo">
+        <button v-for='tab in tabs' v-bind:key='tab' v-bind:class="['tab-button',{active:currentTab===tab}]" v-on:click="currentTab=tab">
+            {{tab}}
+        </button>
+        <!-- 保证切换不同选项卡的实现 keep-active可以保存在缓存中，避免了重排性能的损耗 -->
+        <keep-alive>
+            <component v-bind:is="currentTabComponent" class="tab">
+
+            </component>
+
+        </keep-alive>
+    </div>
+
+    <script>
+        Vue.component('tab-posts', {
+            data: function () {
+                return {
+                    posts: [{
+                            id: 1,
+                            title: 'Mike',
+                            content: '<p>披拉·尼迪裴善官（Mike），1989年12月19日出生于泰国，泰国男歌手、演员，毕业于朱拉隆功大学.</p>'
+                        },
+                        {
+                            id: 2,
+                            title: '刘恺威',
+                            content: '<p>刘恺威，1974年10月13日生于香港，中国影视男演员、歌手、电视剧制片人。</p>'
+                        },
+                        {
+                            id: 3,
+                            title: '韩东君',
+                            content: '<p>韩东君，1992年7月21日出生于黑龙江省哈尔滨市，中国内地男演员、赛车手，毕业于上海戏剧学院2012级表演系。</p>'
+                        },
+                        {
+                            id: 4,
+                            title: '杨芸晴',
+                            content: '<p>杨芸晴（Sunnee），1996年9月28日出生于台湾省，泰国籍华裔流行乐女歌手、演员，中国女子组合火箭少女101成员。</p>'
+                        }
+                    ],
+
+                    selectedPost: null
+                }
+            },
+            template: `
+        <div class="posts-tab">
+        <ul class="pot-sidebar">
+        <li
+        v-for="post in posts"
+        v-bind:key="post.id"
+        v-bind:class="{selected:post===selectedPost}"
+        v-on:click="selectedPost=post"
+        >
+        {{post.title}}
+        </li>
+        </ul>
+        <div class="selected-post-container">
+        <div
+        v-if="selectedPost"
+        class="selected-post"
+        >
+        <h3>{{selectedPost.title}}</h3>
+        <div v-html="selectedPost.content"></div>
+        </div>
+        <strong v-else>
+        请选择一个明星进入详情
+        </strong>
+        </div>
+        </div>
+        `
+        })
+        Vue.component('tab-archive', {
+            template: `<div>进入左侧即是明星选项卡</div>`
+        })
+        new Vue({
+            el: '#dynamic-compnent-demo',
+            data: {
+                currentTab: 'Posts',
+                tabs: ['Posts', 'Archive'] //将两个选项卡合并在一个数组中
+            },
+            computed: {
+                //拼接当前选项卡返回并可以切换
+                currentTabComponent: function () {
+                    return 'tab-' + this.currentTab.toLowerCase()
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!-- 开发环境版本，包含了用帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .box {
+            width: 740px;
+            height: 160px;
+            padding:30px;
+            margin: 50px auto;
+            border: 1px solid #000;
+            text-align: center;
+            background-color: lightcoral;
+        }
+
+        span {
+            margin:10px;
+        }
+
+        span input {
+            width: 50px;
+            height: 20px;
+            text-align:center;
+            font:16px/20px 'microsoft yahei';
+        }
+        .active{
+            color:lightseagreen;
+        }
+        .noactive{
+            color:#ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+      <pa :total='80' preage='11' :page='page1' @change="changePage1" @add="addPage1" @reducel='reducelPage1'></pa> 
+      <!-- 组件的复用 -->
+     <pa :total='50' preage='13' :page='page2' @change="changePage2" @add="addPage2" @reducel='reducelPage2'></pa> 
+    </div>
+    <script>
+        Vue.component('pa', {
+            props:['total','preage','page'],
+            data(){
+                return{
+                  pages:Math.ceil(this.total/this.preage) 
+                }            
+            },
+            template: `
+<div class="pagetion" onselectstart='return false'>
+    <span>共{{total}}条/{{pages}}页</span>
+    <span :class='{noactive:page==1}' @click='reducel(page)'><</span>
+            <span v-for="p of pages" :class="{active:p==page}" @click='change(p)'>{{p}}</span>
+            <span :class='{noactive:page==pages}' @click='add(page,pages)'>></span>
+            <span>
+                前往
+                <input type="text" v-model='page'>页
+            </span>
+</div>
+       `,
+       methods:{
+           change(p){
+               this.$emit("change",p);
+           },
+           add(p,ps){
+               p==ps||this.$emit('add',p);
+           },
+           reducel(p){
+               p==1||this.$emit('reducel',p);
+           }
+       }
+        })
+        new Vue({
+            el:'.box',
+            data:{
+                page1:1,
+                page2:2
+            },
+            methods:{
+                changePage1(p){
+                    this.page1=p;
+                },
+                addPage1(p){
+                    this.page1=++p;
+                },
+                reducelPage1(p){
+                    this.page1=--p;
+                },
+                changePage2(p){
+                    this.page2=p;
+                },
+                addPage2(p){
+                    this.page2=++p;
+                },
+                reducelPage2(p){
+                    this.page2=--p;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

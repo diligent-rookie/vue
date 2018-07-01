@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+      <!-- 开发环境版本，包含了用帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        *{padding:0;margin:0;}
+	.box {
+			margin: 100px;
+		}
+
+		.process {
+			background-color: #3CF;
+			width: 30%;
+			height: 16px;
+			border-radius: 8px;
+			box-shadow: inset 1px 1px 3px #000;
+			transition: all linear 0.2s;
+		}
+
+		span {
+			background: url(drop.png) no-repeat center center;
+			width: 32px;
+			height: 44px;
+			position: absolute;
+			background-size: 100%;
+			line-height: 34px;
+			text-align: center;
+			font-size: 16px;
+			color: #fff;
+			left: -3px;
+			top: -50px;
+			display: none;
+		}
+
+		.slider {
+			width: 600px;
+			height: 16px;
+			border-radius: 8px;
+			background-color: #ccc;
+			position: relative;
+			cursor: pointer;
+			box-shadow: inset 1px 1px 3px #000;
+		}
+
+		.tips {
+			position: absolute;
+			left: 180px;
+			top: -4px;
+			width: 24px;
+			height: 24px;
+			border: 1px #3CF solid;
+			border-radius: 50%;
+			background-color: #fff;
+			transition: all linear 0.15s;
+		}
+
+		.tips:hover {
+			background-color: rgba(255, 255, 255, 0.5);
+			transform: scale(1.1, 1.1);
+		}
+
+		.slider:hover span {
+			display: block;
+		}
+
+    </style>
+</head>
+<body>
+    <div class="box">
+       	<slider :min="0" :max="100" v-model="v"></slider>
+    </div>
+<script>
+    Vue.component('slider',{
+       	props: ['min', 'max', 'value'],
+			data() {
+				return {
+					v: this.value,
+					slider: null,
+					tips: null
+				}
+			},
+			mounted() { //组件渲染后
+				//console.log(this.$ref.slider)  vue获取dom的方法 
+				var that = this;
+				this.slider = this.$refs.slider;
+				this.slider.onclick = function (ev) {
+					var newWidth = ev.clientX - that.slider.offsetLeft;
+					var scale = newWidth / that.slider.offsetWidth;
+					that.v = Math.round((that.max - that.min) * scale + that.min);
+					that.v = Math.max(that.min, that.v);
+					that.v = Math.min(that.max, that.v);
+				}
+				this.tips = this.$refs.tips;
+				this.tips.onmousedown = function (ev) {
+					var width = parseFloat(that.width);
+					var disX = ev.clientX;
+					document.onmousemove = function (ev) {
+						var newWidth = ev.clientX - disX + width;
+						var scale = newWidth / that.slider.offsetWidth;
+						that.v = Math.round((that.max - that.min) * scale + that.min);
+						that.v = Math.max(that.min, that.v);
+						that.v = Math.min(that.max, that.v);
+					}
+					document.onmouseup = function () {
+						document.onmousemove = document.onmouseup = null;
+					}
+					return false;
+				}
+			},
+			computed: {
+				scale() {
+					return (this.v - this.min) / (this.max - this.min)
+				},
+				width() {
+					return (this.slider ? this.slider.offsetWidth * this.scale : 0) + "px";
+				},
+				left() {
+					return (this.tips ? this.slider.offsetWidth * this.scale - this.tips.offsetWidth / 2 : 0) + "px";
+				}
+			},
+
+        template:`
+	    <div class="slider" ref="slider">
+			<div class="process" :style="{width}"></div>
+			<div class="tips" ref="tips" :style="{left}">
+				<span>{{v}}</span>
+			</div>
+		</div>
+
+        `
+    })
+    new Vue({
+        el:'.box',
+        data:{
+            v:30
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!-- 开发环境版本，包含了用帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .box {
+            width: 740px;
+            height: 160px;
+            padding:30px;
+            margin: 50px auto;
+            border: 1px solid #000;
+            text-align: center;
+            background-color: lightcoral;
+        }
+
+        span {
+            margin:10px;
+        }
+
+        span input {
+            width: 50px;
+            height: 20px;
+            text-align:center;
+            font:16px/20px 'microsoft yahei';
+        }
+        .active{
+            color:lightseagreen;
+        }
+        .noactive{
+            color:#ccc;
+        }
+    </style>
+</head>
+
+<body>
+<div class="box">
+    <pa :page-index="currentPage"
+        :total="count"
+        :page-size="pageSize"
+        @change="pageChange"></pa>
+</div>
+<script>
+    Vue.component('pa', {
+        template: `
+        <div class="pagetion" onselectstart='return false'>
+            <span>共{{total}}条/{{pages}}页</span>
+            <span :class='{noactive:index==1}' @click='prev()'><</span>
+                    <span v-for="p of pages" :class="{active:p==index}" @click='go(p)'>{{p}}</span>
+                    <span :class='{noactive:index==pages}' @click='next()'>></span>
+                    <span>
+                        前往
+                        <input type="text" v-model='index'>页
+                    </span>
+        </div>
+       `,
+        props:['total','pageSize','pageIndex'],
+        watch : {
+            pageIndex(val) {
+                if(val > this.pages){
+                    val =  this.pages
+                }
+                this.index = val || 1
+            },
+            pageSize(val) {
+                this.limit = val || 10
+            },
+            total(val) {
+                this.size = val || 1
+            }
+        },
+        computed : {
+            //计算总页码
+            pages() {
+                return Math.ceil(this.size / this.limit)
+            },
+        },
+        data(){
+            return{
+                index : this.pageIndex, //当前页码
+                limit : this.pageSize, //每页显示条数
+                size : this.total || 1,
+            }
+        },
+        methods:{
+            go (page) {
+                if (this.index !== page) {
+                    this.index = page
+                    this.$emit('change', this.index)
+                }
+            },
+            prev(){
+                if (this.index > 1) {
+                    this.go(this.index - 1)
+                }
+            },
+            next(){
+                if (this.index < this.pages) {
+                    this.go(this.index + 1)
+                }
+            }
+        }
+    })
+    new Vue({
+        el:'.box',
+        data() {
+            return {
+                pageSize : 10 ,
+                currentPage : 1,
+                count : 80,
+            }
+        },
+        methods:{
+            pageChange (page) {
+                this.currentPage = page
+            }
+        }
+    })
+</script>
+</body>
+
+</html>

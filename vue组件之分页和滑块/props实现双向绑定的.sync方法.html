@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!-- 开发环境版本，包含了用帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <my-component :foo.sync='bar'></my-component>
+        <!-- <my-component :foo='bar' @update:foo='val=>bar>val'></my-component> -->
+    </div>
+    <script>
+        //我们都知道props不能实现双向数据绑定，官方文档对此提出一种.sync修饰符的解决方案
+        Vue.component('my-component', {
+            template: ` 
+        <div>
+        <input  v-model='copyFoo' style='width:300px;height:40px;font-size:16px;color:#666;text-align:center;'>
+        <button @click="increment" style='padding:10px 30px;font-size:16px;'>点我可以加一哦，你要不试一试  {{copyFoo}}</button>
+        </div>
+        `,
+            props: ["foo"],
+            data: function () {
+                return {
+                    copyFoo: this.foo
+                }
+            },
+            methods: {
+                increment: function () {
+                    this.$emit('update:foo', ++this.copyFoo);
+                }
+            }
+        });
+        new Vue({
+            el: "#app",
+            data: {
+                bar: 0
+            }
+        });
+    </script>
+</body>
+
+</html>

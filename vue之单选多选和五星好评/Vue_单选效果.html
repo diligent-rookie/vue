@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<!-- 开发环境版本，包含了用帮助的命令行警告 -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		.box {
+			width: 800px;
+			margin: 50px auto;
+		}
+
+		ul {
+			height: 200px;
+			text-align: center;
+			margin-top: 20px;
+			background-color: lightyellow;
+		}
+
+		li {
+			display: inline-block;
+			list-style: none;
+			width: 100px;
+			height: 100px;
+			margin: 30px;
+			font: 18px/100px "microsoft yahei";
+			text-align: center;
+			border: 1px solid #ccc;
+			transition: all 1s;
+		}
+
+		li:hover {
+			border: 1px solid #fff;
+			color: #fff;
+			background-color: lightseagreen;
+		}
+
+		.active {
+			border: 1px solid #fff;
+			color: #fff;
+			background-color: lightseagreen;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="box">
+		<h1>请您选择了城市:{{city}}</h1>
+		<ul>
+			<li v-for="(element,index) of cities" @click="change(element,index)" :class="{active:n===index}">{{element}}</li>
+		</ul>
+	</div>
+	<script>
+		new Vue({
+			el: ".box",
+			data: {
+				cities: ["北京", "上海", "杭州", "广州"],
+				n: 0,
+				city: "北京"
+			},
+			methods: {
+				change(element, index) {
+					this.n = index;
+					this.city = element;
+				}
+			}
+		})
+	</script>
+</body>
+
+</html>

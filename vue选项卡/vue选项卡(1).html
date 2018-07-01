@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!-- 开发环境版本，包含了用帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .box {
+            width: 600px;
+            margin: 50px auto;
+        }
+
+        li {
+            display: inline-block;
+            width: 100px;
+            height: 50px;
+            font: 16px/50px "microsoft yahei";
+            background-color: darkorange;
+            text-align: center;
+            cursor: pointer;
+            color: #fff;
+            transition: all 2s;
+        }
+
+        /* li:hover{
+            transform:scale(0.9,0.9);
+            box-shadow: inset 0px 0px 1px 3px #fff;
+        } */
+
+        .content {
+            width: 400px;
+            height: 300px;
+            background-color: orange;
+            font: 20px/30px "华文行楷";
+            color: #fff;
+            text-indent: 2em;
+        }
+
+        .active {
+            transform: scale(0.9, 0.9);
+            box-shadow: inset 0px 0px 1px 2px #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <ul>
+            <li v-for='element,index of message' :class="{active:index===n}" @click="change(index)">{{element.name}}</li>
+        </ul>
+        <div class='content'>{{message[n].content}}</div>
+    </div>
+    <script>
+        new Vue({
+            el: ".box",
+            data: {
+                message: [{
+                        name: "薛之谦",
+                        content: "薛之谦（Joker Xue），1983年7月17日出生于上海，华语流行乐男歌手、影视演员、音乐制作人，毕业于格里昂酒店管理学院。"
+                    }, {
+                        name: "张韶涵",
+                        content: "张韶涵（Angela Zhang），1982年1月19日出生于台湾省桃园市中坜区，拥有四分之一维吾尔族血统 [1] ，华语流行乐女歌手、影视演员，毕业于加拿大温斯顿爵士邱吉尔中等学校。"
+                    },
+                    {
+                        name: "Mike",
+                        content: "披拉·尼迪裴善官（Mike），1989年12月19日出生于泰国，泰国男歌手、演员，毕业于朱拉隆功大学"
+                    },
+                    {
+                        name: "刘恺威",
+                        content: "刘恺威，1974年10月13日生于香港，中国影视男演员、歌手、电视剧制片人。"
+                    }
+                ],
+                n: 0
+            },
+            methods: {
+                change(index) {
+                    this.n = index;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

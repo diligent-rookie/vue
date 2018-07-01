@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>无标题文档</title>
+    <!-- 开发环境版本，包含了用帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+
+        .box {
+            margin: 150px 150px;
+        }
+
+        ul {
+            padding: 0;
+            list-style: none;
+        }
+
+        li {
+            width: 50px;
+            height: 30px;
+            display: inline-block;
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        li:before {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            line-height: 10px;
+            content: "";
+            border: 1px #000 solid;
+            margin-right: 2px;
+            transition: all 0.3s linear;
+        }
+
+        li.checked:before,.box div.checked {
+            background-color: #0CF;
+            border: 1px #fff solid;
+        }
+
+        li.checked {
+            color: #0CF;
+        }
+
+        .allCheck {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            vertical-align: baseline;
+            margin: 0 10px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div :class="{allCheck:true,checked:all}" @click="isCheck()"></div>
+        <strong>全选</strong>
+        <ul>
+            <li v-for='element,index of cities' @click='change(element)' :class="{checked:element.show}">{{element.name}}</li>
+        </ul>
+        <p>{{checkTotal}}</p>
+    </div>
+
+    <script>
+        new Vue({
+            el: ".box",
+            data: {
+                cities: [{
+                        name: "北京",
+                        show: false
+                    },
+                    {
+                        name: "上海",
+                        show: false
+                    },
+                    {
+                        name: "重庆",
+                        show: false
+                    },
+                    {
+                        name: "广州",
+                        show: false
+                    },
+                    {
+                        name: "西安",
+                        show: false
+                    }
+                ],
+                all: false
+            },
+            methods: {
+                change(element) {
+                    element.show = !element.show;
+                },
+                isCheck(){
+                    this.all = !this.all;
+                }
+            },
+             watch: {
+                    all() {
+                        this.cities.forEach(element => {
+                            element.show = this.all;
+                        }); 
+                    }
+
+                },
+                computed:{
+                    checkTotal:{
+                        get(){
+                            return this.cities.filter(element=>element.show).length;
+                        }
+                    }
+                }
+        })
+    </script>
+</body>
+
+</html>

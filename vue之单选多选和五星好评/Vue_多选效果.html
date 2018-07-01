@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!-- 开发环境版本，包含了用帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        ul {
+            width: 800px;
+            margin: 100px auto;
+        }
+
+        li {
+            display: inline-block;
+            margin: 0 30px;
+            font-size: 18px;
+        }
+
+        li:before {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            content: "";
+            vertical-align: middle;
+            margin: 10px;
+            border: 1px solid #000;
+            transition: all 2s;
+        }
+
+        li.active:before {
+            border: 1px solid #fff;
+            background-color: lightskyblue;
+        }
+
+        .active {
+            border: 1px solid #fff;
+            color: lightskyblue;
+        }
+    </style>
+
+</head>
+
+<body>
+    <ul>
+        <li v-for="(element,index) of citys" @click='change(element)' :class='{active:element.show}'>{{element.name}}</li>s
+    </ul>
+    <script>
+        new Vue({
+            el: "ul",
+            data: {
+                citys: [{
+                        name: "北京",
+                        show: false
+                    },
+                    {
+                        name: "上海",
+                        show: false
+                    },
+                    {
+                        name: "广州",
+                        show: false
+                    },
+                    {
+                        name: "深圳",
+                        show: false
+                    },
+                ]
+            },
+            methods: {
+                change(element) {
+                    element.show = !element.show;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
